@@ -1,0 +1,138 @@
+---
+Organizations:
+  - &AincradOrg
+    Name: Aincrad
+    ID: Aincrad
+    MSPDir: crypto-config/ordererOrganizations/aincrad.moe/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Aincrad.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Aincrad.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Aincrad.admin')"
+
+  - &KiritoOrg
+    Name: Kirito
+    ID: Kirito
+    MSPDir: crypto-config/peerOrganizations/kirito.moe/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Kirito.member', 'Kirito.peer', 'Kirito.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Kirito.member', 'Kirito.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Kirito.admin')"
+    AnchorPeers:
+      - Host: peer0.kirito.moe
+        Port: 7051
+
+  - &AsunaOrg
+    Name: Asuna
+    ID: Asuna
+    MSPDir: crypto-config/peerOrganizations/asuna.moe/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Asuna.member', 'Asuna.peer', 'Asuna.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Asuna.member', 'Asuna.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Asuna.admin')"
+    AnchorPeers:
+      - Host: peer0.asuna.moe
+        Port: 7051
+
+
+Capabilities:
+  Channel: &ChannelCapabilities
+    V1_3: true
+  Orderer: &OrdererCapabilities
+    V1_1: true
+  Application: &ApplicationCapabilities
+    V1_3: true
+    V1_2: false
+    V1_1: false
+
+Application: &ApplicationDefaults
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "AND Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+
+Orderer: &OrdererDefaults
+  OrdererType: solo
+  Addresses:
+    - orderer.aincrad.moe:7050
+  BatchTimeout: 2s
+  BatchSize:
+    MaxMessageCount: 10
+    AbsoluteMaxBytes: 99MB
+    PreferredMaxBytes: 512KB
+  Organizations:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "AND Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    BlockValidation:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+
+Channel: &ChannelDefault
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "AND Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+  Capabilities:
+    <<: *ChannelCapabilities
+
+Profiles:
+  TwoOrgsOrdererGenesis:
+    <<: *ChannelDefault
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations:
+        - *AincradOrg
+      Capabilities:
+        <<: *OrdererCapabilities
+    Consortiums:
+      SampleConsortium:
+        Organizations:
+          - *KiritoOrg
+          - *AsunaOrg
+
+  TwoOrgsChannel:
+    Consortium: SampleConsortium
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *KiritoOrg
+        - *AsunaOrg
+      Capabilities:
+        <<: *ApplicationCapabilities
