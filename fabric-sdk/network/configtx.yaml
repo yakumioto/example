@@ -70,7 +70,7 @@ Application: &ApplicationDefaults
       Rule: "ANY Readers"
     Writers:
       Type: ImplicitMeta
-      Rule: "AND Writers"
+      Rule: "ANY Writers"
     Admins:
       Type: ImplicitMeta
       Rule: "MAJORITY Admins"
@@ -85,12 +85,13 @@ Orderer: &OrdererDefaults
     AbsoluteMaxBytes: 99MB
     PreferredMaxBytes: 512KB
   Organizations:
+  Policies:
     Readers:
       Type: ImplicitMeta
       Rule: "ANY Readers"
     Writers:
       Type: ImplicitMeta
-      Rule: "AND Writers"
+      Rule: "ANY Writers"
     Admins:
       Type: ImplicitMeta
       Rule: "MAJORITY Admins"
@@ -105,7 +106,7 @@ Channel: &ChannelDefault
       Rule: "ANY Readers"
     Writers:
       Type: ImplicitMeta
-      Rule: "AND Writers"
+      Rule: "ANY Writers"
     Admins:
       Type: ImplicitMeta
       Rule: "MAJORITY Admins"
