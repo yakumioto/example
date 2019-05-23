@@ -1,7 +1,5 @@
 ---
-# 以 刀剑 为背景的 fabric network
 OrdererOrgs:
-  # 艾恩葛朗特(SAO的舞台, 玩家攻略城堡的名字)
   - Name: Aincrad
     Domain: aincrad.moe
     Specs:

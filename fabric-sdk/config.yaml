@@ -1,0 +1,163 @@
+version: 1.0.0
+
+client:
+  organization: kirito
+
+  logging:
+    level: debug
+
+  cryptoconfig:
+    path: /data/swordartonline-network/crypto-config
+
+  credentialStore:
+    path: /tmp/state-store
+    cryptoStore:
+      path: /tmp/msp
+
+  BCCSP:
+    security:
+      enabled: true
+      default:
+        provider: SW
+      hashAlgorithm: SHA2
+      softVerify: true
+      level: 256
+
+  tlsCerts:
+    systemCertPool: true
+    client:
+      key:
+        path: /data/swordartonline-network/crypto-config/peerOrganizations/kirito.moe/users/Admin@kirito.moe/tls/client.key
+      cert:
+        path: /data/swordartonline-network/crypto-config/peerOrganizations/kirito.moe/users/Admin@kirito.moe/tls/client.crt
+
+channels:
+  _default:
+    peers:
+      peer0.kirito.svc.cluster.local:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+
+    policies:
+      queryChannelConfig:
+        minResponses: 1
+        maxTargets: 1
+        retryOpts:
+          attempts: 5
+          initialBackoff: 500ms
+          maxBackoff: 5s
+          backoffFactor: 2.0
+      discovery:
+        maxTargets: 2
+        retryOpts:
+          attempts: 4
+          initialBackoff: 500ms
+          maxBackoff: 5s
+          backoffFactor: 2.0
+      eventService:
+        resolverStrategy: PreferOrg
+        balancer: Random
+        blockHeightLagThreshold: 5
+        reconnectBlockHeightLagThreshold: 8
+        peerMonitorPeriod: 6s
+
+organizations:
+  Kirito:
+    mspid: Kirito
+    cryptoPath: /data/swordartonline-network/crypto-config/peerOrganizations/kirito.moe/users/Admin@kirito.moe/msp
+    peers:
+      - peer0.kirito.moe
+      - peer1.kirito.moe
+
+  Asuna:
+    mspid: Asuna
+    cryptoPath: /data/swordartonline-network/crypto-config/peerOrganizations/asuna.moe/users/Admin@asuna.moe/msp
+    peers:
+      - peer0.asuna.moe
+      - peer1.asuna.moe
+
+  Aincrad:
+    mspid: Aincrad
+    cryptoPath: /data/swordartonline-network/crypto-config/ordererOrganizations/aincrad.moe/users/Admin@aincrad.moe/msp
+
+orderers:
+  orderer.aincrad.moe:
+    url: orderer.aincrad.svc.cluster.local:7050
+    grpcOptions:
+      ssl-target-name-override: orderer.aincrad.moe
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+    tlsCACerts:
+      path: /data/swordartonline-network/crypto-config/ordererOrganizations/aincrad.moe/tlsca/tlsca.aincrad.moe-cert.pem
+
+peers:
+  peer0.kirito.moe:
+    url: peer0.kirito.svc.cluster.local:7051
+    grpcOptions:
+      ssl-target-name-override: peer0.kirito.moe
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+      tlsCACerts:
+        path: /data/swordartonline-network/crypto-config/peerOrganizations/kirito.moe/tlsca/tlsca.kirito.moe-cert.pem
+
+  peer1.kirito.moe:
+    url: peer1.kirito.svc.cluster.local:7051
+    grpcOptions:
+      ssl-target-name-override: peer0.kirito.moe
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+      tlsCACerts:
+        path: /data/swordartonline-network/crypto-config/peerOrganizations/kirito.moe/tlsca/tlsca.kirito.moe-cert.pem
+
+  peer0.asuna.moe:
+    url: peer0.asuna.svc.cluster.local:7051
+    grpcOptions:
+      ssl-target-name-override: peer0.asuna.moe
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+      tlsCACerts:
+        path: /data/swordartonline-network/crypto-config/peerOrganizations/asuna.moe/tlsca/tlsca.asuna.moe-cert.pem
+
+  peer1.asuna.moe:
+    url: peer1.asuna.svc.cluster.local:7051
+    grpcOptions:
+      ssl-target-name-override: peer1.asuna.moe
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+      tlsCACerts:
+        path: /data/swordartonline-network/crypto-config/peerOrganizations/asuna.moe/tlsca/tlsca.asuna.moe-cert.pem
+#
+#entityMatchers:
+#  peer:
+#    - pattern: peer0.kirito.moe
+#      urlSubstitutionExp: peer0.kirito.svc.cluster.local:7051
+#      sslTargetOverrideUrlSubstitutionExp: peer0.kirito.moe
+#      mappedHost: peer0.kirito.moe
+#
+#    - pattern: peer1.kirito.moe
+#      urlSubstitutionExp: peer1.kirito.svc.cluster.local:7051
+#      sslTargetOverrideUrlSubstitutionExp: peer1.kirito.moe
+#      mappedHost: peer1.kirito.moe
+#
+#  orderer:
+#    - pattern: orderer.aincrad.moe
+#      urlSubstitutionExp: orderer.aincrad.svc.cluster.local:7050
+#      sslTargetOverrideUrlSubstitutionExp: orderer.aincrad.moe
+#      mappedHost: orderer.aincrad.moe

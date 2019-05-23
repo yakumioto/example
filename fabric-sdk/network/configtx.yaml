@@ -1,3 +1,8 @@
+# use command
+# configtxgen -profile TwoOrgsOrdererGenesis -channelID swordartonline-channel -outputBlock ./channel-artifacts/genesis.block
+# configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/master.tx -channelID master
+# configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/KiritoAnchors.tx -channelID master -asOrg Kirito
+# configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/AsunaAnchors.tx -channelID master -asOrg Asuna
 ---
 Organizations:
   - &AincradOrg
@@ -30,7 +35,7 @@ Organizations:
         Type: Signature
         Rule: "OR('Kirito.admin')"
     AnchorPeers:
-      - Host: peer0.kirito.moe
+      - Host: peer0.kirito.svc.cluster.local
         Port: 7051
 
   - &AsunaOrg
@@ -48,7 +53,7 @@ Organizations:
         Type: Signature
         Rule: "OR('Asuna.admin')"
     AnchorPeers:
-      - Host: peer0.asuna.moe
+      - Host: peer0.asuna.svc.cluster.local
         Port: 7051
 
 
@@ -76,14 +81,19 @@ Application: &ApplicationDefaults
       Rule: "MAJORITY Admins"
 
 Orderer: &OrdererDefaults
-  OrdererType: solo
+  OrdererType: kafka
   Addresses:
-    - orderer.aincrad.moe:7050
+    - orderer.aincrad.svc.cluster.local:7050
   BatchTimeout: 2s
   BatchSize:
     MaxMessageCount: 10
     AbsoluteMaxBytes: 99MB
     PreferredMaxBytes: 512KB
+  Kafka:
+    Brokers:
+      - kafka-0.kafka-svc.kafka.svc.cluster.local:9093
+      - kafka-1.kafka-svc.kafka.svc.cluster.local:9093
+
   Organizations:
   Policies:
     Readers:
