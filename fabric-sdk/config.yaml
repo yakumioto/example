@@ -1,7 +1,7 @@
 version: 1.0.0
 
 client:
-  organization: kirito
+  organization: Kirito
 
   logging:
     level: debug
@@ -27,9 +27,9 @@ client:
     systemCertPool: true
     client:
       key:
-        path: /data/swordartonline-network/crypto-config/peerOrganizations/kirito.moe/users/Admin@kirito.moe/tls/client.key
+        path: /data/swordartonline-network/crypto-config/peerOrganizations/kirito.svc.cluster.local/users/Admin@kirito.svc.cluster.local/tls/client.key
       cert:
-        path: /data/swordartonline-network/crypto-config/peerOrganizations/kirito.moe/users/Admin@kirito.moe/tls/client.crt
+        path: /data/swordartonline-network/crypto-config/peerOrganizations/kirito.svc.cluster.local/users/Admin@kirito.svc.cluster.local/tls/client.crt
 
 channels:
   _default:
@@ -66,98 +66,98 @@ channels:
 organizations:
   Kirito:
     mspid: Kirito
-    cryptoPath: /data/swordartonline-network/crypto-config/peerOrganizations/kirito.moe/users/Admin@kirito.moe/msp
+    cryptoPath: /data/swordartonline-network/crypto-config/peerOrganizations/kirito.svc.cluster.local/users/Admin@kirito.svc.cluster.local/msp
     peers:
-      - peer0.kirito.moe
-      - peer1.kirito.moe
+      - peer0.kirito.svc.cluster.local
+      - peer1.kirito.svc.cluster.local
 
   Asuna:
     mspid: Asuna
-    cryptoPath: /data/swordartonline-network/crypto-config/peerOrganizations/asuna.moe/users/Admin@asuna.moe/msp
+    cryptoPath: /data/swordartonline-network/crypto-config/peerOrganizations/asuna.svc.cluster.local/users/Admin@asuna.svc.cluster.local/msp
     peers:
-      - peer0.asuna.moe
-      - peer1.asuna.moe
+      - peer0.asuna.svc.cluster.local
+      - peer1.asuna.svc.cluster.local
 
   Aincrad:
     mspid: Aincrad
-    cryptoPath: /data/swordartonline-network/crypto-config/ordererOrganizations/aincrad.moe/users/Admin@aincrad.moe/msp
+    cryptoPath: /data/swordartonline-network/crypto-config/ordererOrganizations/aincrad.svc.cluster.local/users/Admin@aincrad.svc.cluster.local/msp
 
 orderers:
-  orderer.aincrad.moe:
+  orderer.aincrad.svc.cluster.local:
     url: orderer.aincrad.svc.cluster.local:7050
     grpcOptions:
-      ssl-target-name-override: orderer.aincrad.moe
+      ssl-target-name-override: orderer.aincrad.svc.cluster.local
       keep-alive-time: 0s
       keep-alive-timeout: 20s
       keep-alive-permit: false
       fail-fast: false
       allow-insecure: false
     tlsCACerts:
-      path: /data/swordartonline-network/crypto-config/ordererOrganizations/aincrad.moe/tlsca/tlsca.aincrad.moe-cert.pem
+      path: /data/swordartonline-network/crypto-config/ordererOrganizations/aincrad.svc.cluster.local/tlsca/tlsca.aincrad.svc.cluster.local-cert.pem
 
 peers:
-  peer0.kirito.moe:
+  peer0.kirito.svc.cluster.local:
     url: peer0.kirito.svc.cluster.local:7051
     grpcOptions:
-      ssl-target-name-override: peer0.kirito.moe
+      ssl-target-name-override: peer0.kirito.svc.cluster.local
       keep-alive-time: 0s
       keep-alive-timeout: 20s
       keep-alive-permit: false
       fail-fast: false
       allow-insecure: false
-      tlsCACerts:
-        path: /data/swordartonline-network/crypto-config/peerOrganizations/kirito.moe/tlsca/tlsca.kirito.moe-cert.pem
+    tlsCACerts:
+        path: /data/swordartonline-network/crypto-config/peerOrganizations/kirito.svc.cluster.local/tlsca/tlsca.kirito.svc.cluster.local-cert.pem
 
-  peer1.kirito.moe:
+  peer1.kirito.svc.cluster.local:
     url: peer1.kirito.svc.cluster.local:7051
     grpcOptions:
-      ssl-target-name-override: peer0.kirito.moe
+      ssl-target-name-override: peer1.kirito.svc.cluster.local
       keep-alive-time: 0s
       keep-alive-timeout: 20s
       keep-alive-permit: false
       fail-fast: false
       allow-insecure: false
-      tlsCACerts:
-        path: /data/swordartonline-network/crypto-config/peerOrganizations/kirito.moe/tlsca/tlsca.kirito.moe-cert.pem
+    tlsCACerts:
+      path: /data/swordartonline-network/crypto-config/peerOrganizations/kirito.svc.cluster.local/tlsca/tlsca.kirito.svc.cluster.local-cert.pem
 
-  peer0.asuna.moe:
+  peer0.asuna.svc.cluster.local:
     url: peer0.asuna.svc.cluster.local:7051
     grpcOptions:
-      ssl-target-name-override: peer0.asuna.moe
+      ssl-target-name-override: peer0.asuna.svc.cluster.local
       keep-alive-time: 0s
       keep-alive-timeout: 20s
       keep-alive-permit: false
       fail-fast: false
       allow-insecure: false
-      tlsCACerts:
-        path: /data/swordartonline-network/crypto-config/peerOrganizations/asuna.moe/tlsca/tlsca.asuna.moe-cert.pem
+    tlsCACerts:
+      path: /data/swordartonline-network/crypto-config/peerOrganizations/asuna.svc.cluster.local/tlsca/tlsca.asuna.svc.cluster.local-cert.pem
 
-  peer1.asuna.moe:
+  peer1.asuna.svc.cluster.local:
     url: peer1.asuna.svc.cluster.local:7051
     grpcOptions:
-      ssl-target-name-override: peer1.asuna.moe
+      ssl-target-name-override: peer1.asuna.svc.cluster.local
       keep-alive-time: 0s
       keep-alive-timeout: 20s
       keep-alive-permit: false
       fail-fast: false
       allow-insecure: false
-      tlsCACerts:
-        path: /data/swordartonline-network/crypto-config/peerOrganizations/asuna.moe/tlsca/tlsca.asuna.moe-cert.pem
-#
+    tlsCACerts:
+      path: /data/swordartonline-network/crypto-config/peerOrganizations/asuna.svc.cluster.local/tlsca/tlsca.asuna.svc.cluster.local-cert.pem
+
 #entityMatchers:
 #  peer:
-#    - pattern: peer0.kirito.moe
-#      urlSubstitutionExp: peer0.kirito.svc.cluster.local:7051
-#      sslTargetOverrideUrlSubstitutionExp: peer0.kirito.moe
-#      mappedHost: peer0.kirito.moe
+#    - pattern: peer0.kirito.svc.cluster.local
+#      urlSubstitutionExp: localhost:7051
+#      sslTargetOverrideUrlSubstitutionExp: peer0.kirito.svc.cluster.local
+#      mappedHost: peer0.kirito.svc.cluster.local
 #
-#    - pattern: peer1.kirito.moe
+#    - pattern: peer1.kirito.svc.cluster.local
 #      urlSubstitutionExp: peer1.kirito.svc.cluster.local:7051
-#      sslTargetOverrideUrlSubstitutionExp: peer1.kirito.moe
-#      mappedHost: peer1.kirito.moe
+#      sslTargetOverrideUrlSubstitutionExp: peer1.kirito.svc.cluster.local
+#      mappedHost: peer1.kirito.svc.cluster.local
 #
 #  orderer:
-#    - pattern: orderer.aincrad.moe
+#    - pattern: orderer.aincrad.svc.cluster.local
 #      urlSubstitutionExp: orderer.aincrad.svc.cluster.local:7050
-#      sslTargetOverrideUrlSubstitutionExp: orderer.aincrad.moe
-#      mappedHost: orderer.aincrad.moe
+#      sslTargetOverrideUrlSubstitutionExp: orderer.aincrad.svc.cluster.local
+#      mappedHost: orderer.aincrad.svc.cluster.local

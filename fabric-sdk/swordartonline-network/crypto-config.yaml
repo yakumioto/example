@@ -1,0 +1,28 @@
+---
+OrdererOrgs:
+
+  # 茅場晶彦 SAO 设计者
+  - Name: Akihiko
+    Domain: akihiko.moe
+    Specs:
+      - Hostname: orderer
+
+PeerOrgs:
+
+  # 桐谷和人 SAO 男主
+  - Name: Kirito
+    Domain: kirito.moe
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+
+  # 結城明日奈 SAO 女主
+  - Name: Asuna
+    Domain: asuna.moe
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+    Users:
+      Count: 1
