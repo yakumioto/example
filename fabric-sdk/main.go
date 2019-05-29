@@ -23,7 +23,9 @@ func main() {
     }
 
     //createChannel(sdk)
-
+    //
+    //time.Sleep(5 * time.Second)
+    //
     //joinChannel(sdk)
 
     //createCC(sdk)
@@ -32,7 +34,7 @@ func main() {
 }
 
 func createChannel(sdk *fabsdk.FabricSDK) {
-    clientCtx := sdk.Context(fabsdk.WithUser("Admin"), fabsdk.WithOrg("Aincrad"))
+    clientCtx := sdk.Context(fabsdk.WithUser("Admin"), fabsdk.WithOrg("Akihiko"))
     resMgmtClient, err :=resmgmt.New(clientCtx)
     if err != nil {
         log.Fatalln("resmgmt new error: ", err)
@@ -43,11 +45,11 @@ func createChannel(sdk *fabsdk.FabricSDK) {
     }
     adminIdentity, err := mspClient.GetSigningIdentity("Admin")
     req := resmgmt.SaveChannelRequest{
-        ChannelID: "master",
-        ChannelConfigPath: "/data/swordartonline-network/channel-artifacts/master.tx",
+        ChannelID: "swordartonline",
+        ChannelConfigPath: "/data/swordartonline-network/channel-artifacts/swordartonline.tx",
         SigningIdentities: []msp.SigningIdentity{adminIdentity},
     }
-    txID, err := resMgmtClient.SaveChannel(req, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint("orderer.aincrad.svc.cluster.local"))
+    txID, err := resMgmtClient.SaveChannel(req, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint("orderer.akihiko.moe"))
     if err != nil {
         log.Fatalln("save channel error: ", err)
     }
@@ -61,7 +63,7 @@ func joinChannel(sdk *fabsdk.FabricSDK) {
     if err != nil {
         log.Fatalln("resmgmt new error: ", err)
     }
-    if err := kiritoResMgmtClient.JoinChannel("master", resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint("orderer.aincrad.svc.cluster.local")); err != nil {
+    if err := kiritoResMgmtClient.JoinChannel("swordartonline", resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint("orderer.akihiko.moe")); err != nil {
         log.Fatalln("join channel error: ", err)
     }
 
@@ -70,14 +72,22 @@ func joinChannel(sdk *fabsdk.FabricSDK) {
     if err != nil {
        log.Fatalln("resmgmt new error: ", err)
     }
-    if err := asunaResMgmtClient.JoinChannel("master", resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint("orderer.aincrad.svc.cluster.local")); err != nil {
+    if err := asunaResMgmtClient.JoinChannel("swordartonline", resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint("orderer.akihiko.moe")); err != nil {
        log.Fatalln("join channel error: ", err)
     }
+
+    log.Println("join channel successful")
 }
 
 func createCC(sdk *fabsdk.FabricSDK) {
     kiritoClientCtx := sdk.Context(fabsdk.WithUser("Admin"), fabsdk.WithOrg("Kirito"))
     kiritoResMgmtClient, err :=resmgmt.New(kiritoClientCtx)
+    if err != nil {
+        log.Fatalln("resmgmt new error: ", err)
+    }
+
+    asunaClientCtx := sdk.Context(fabsdk.WithUser("Admin"), fabsdk.WithOrg("Asuna"))
+    asunaResMgmtClient, err := resmgmt.New(asunaClientCtx)
     if err != nil {
         log.Fatalln("resmgmt new error: ", err)
     }
@@ -92,11 +102,11 @@ func createCC(sdk *fabsdk.FabricSDK) {
 
     _, err = kiritoResMgmtClient.InstallCC(ccreq, resmgmt.WithRetry(retry.DefaultResMgmtOpts))
     if err != nil {
-        log.Fatalln("install chaincode error: ", err)
+        log.Fatalln("kirito install chaincode error: ", err)
     }
 
-    ccPolicy := cauthdsl.SignedByAnyMember([]string{"Kirito"})
-    resp, err := kiritoResMgmtClient.InstantiateCC("master",
+    ccPolicy := cauthdsl.SignedByAnyMember([]string{"Kirito", "Asuna"})
+    resp, err := kiritoResMgmtClient.InstantiateCC("swordartonline",
         resmgmt.InstantiateCCRequest{
             Name: "example",
             Path: "chaincode-example",
@@ -109,11 +119,16 @@ func createCC(sdk *fabsdk.FabricSDK) {
         log.Fatalln("instantiate chaincode error: ", err)
     }
 
+    _, err = asunaResMgmtClient.InstallCC(ccreq, resmgmt.WithRetry(retry.DefaultResMgmtOpts))
+    if err != nil {
+        log.Fatalln("asuna install chaincode error: ", err)
+    }
+
     log.Println("create channel txID: ", resp.TransactionID)
 }
 
 func queryCC(sdk *fabsdk.FabricSDK) {
-    kiritoClientCtx := sdk.ChannelContext("master", fabsdk.WithUser("Admin"), fabsdk.WithOrg("Kirito"))
+    kiritoClientCtx := sdk.ChannelContext("swordartonline", fabsdk.WithUser("Admin"), fabsdk.WithOrg("Kirito"))
     channelClient, err := channel.New(kiritoClientCtx)
     if err != nil {
         log.Fatalln("new channel error: ", err)
@@ -123,7 +138,7 @@ func queryCC(sdk *fabsdk.FabricSDK) {
         Fcn: "query",
         Args: [][]byte{[]byte("a")},
     }
-    res, err := channelClient.Query(req, channel.WithRetry(retry.DefaultChannelOpts), channel.WithTargetEndpoints("peer1.kirito.svc.cluster.local"))
+    res, err := channelClient.Query(req, channel.WithRetry(retry.DefaultChannelOpts))
     if err != nil {
         log.Fatalln("query err: ", err)
     }
