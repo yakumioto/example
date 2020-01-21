@@ -2,10 +2,11 @@ syntax = "proto3";
 
 package protos;
 
-import "third_party/github.com/gogo/protobuf/gogoproto/gogo.proto";
-
 service Greeter {
     rpc SayHello (HelloRequest) returns (HelloReply) {}
+    rpc SayHelloClientStream (stream HelloRequest) returns (HelloReply) {}
+    rpc SayHelloServerStream (HelloRequest) returns (stream HelloReply) {}
+    rpc SayHelloBidiStream (stream HelloRequest) returns (stream HelloReply) {}
 }
 
 message HelloRequest {
